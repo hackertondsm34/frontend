@@ -2,7 +2,7 @@ import { Inter } from "next/font/google";
 import { ThemeProvider } from "styled-components";
 import { theme } from "@/theme/theme";
 import { GlobalStyle } from "@/theme/global";
-import { QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 const inter = Inter({
   weight: ["400", "500", "600", "700"],
