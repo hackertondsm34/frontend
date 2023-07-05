@@ -1,14 +1,24 @@
 import { Inter } from "next/font/google";
+import { ThemeProvider } from "styled-components";
+import { theme } from "@/theme/theme";
+import { GlobalStyle } from "@/theme/global";
+import { QueryClientProvider } from "@tanstack/react-query";
 export default function App({ Component, pageProps }) {
   const inter = Inter({
     weight: ["400", "500", "600", "700"],
     subsets: ["latin"],
   });
+  const [client] = React.useState(() => new QueryClient());
   return (
     <>
-      <main className={inter.className}>
-        <Component {...pageProps} />
-      </main>
+      <QueryClientProvider {...{ client }}>
+        <ThemeProvider {...{ theme }}>
+          <main className={inter.className}>
+            <GlobalStyle />
+            <Component {...pageProps} />
+          </main>
+        </ThemeProvider>
+      </QueryClientProvider>
     </>
   );
 }
