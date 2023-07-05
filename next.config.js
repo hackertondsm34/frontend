@@ -1,6 +1,16 @@
+const withMDX = require("@next/mdx")({
+  extension: /\.mdx?$/,
+  options: {
+    remarkPlugins: [],
+    rehypePlugins: [],
+  },
+});
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-}
+  pageExtensions: ["ts", "tsx", "js", "jsx", "md", "mdx"],
+  trailingSlash: true,
+};
 
-module.exports = nextConfig
+// Merge MDX config with Next.js config
+module.exports = withMDX(nextConfig);

@@ -2,7 +2,7 @@
 import axios from "axios";
 import cookie from "js-cookie";
 const request = axios.create({
-  baseURL: "",
+  baseURL: "http://3.36.186.20:3000",
 });
 const accessToken = cookie.get("accessToken");
 if (accessToken !== undefined) {
