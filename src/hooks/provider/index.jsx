@@ -7,6 +7,11 @@ const reducer = (state, action) => {
         ...state,
         header: !state.header,
       };
+    case "OPTIONTEXT":
+      return {
+        ...state,
+        optionText: action.text,
+      };
   }
 };
 const ValueContext = createContext();
@@ -14,6 +19,7 @@ const ActionContext = createContext();
 export const ContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, {
     header: false,
+    optionText: "전체",
   });
   return (
     <>
