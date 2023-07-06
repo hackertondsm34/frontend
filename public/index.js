@@ -10,3 +10,6 @@ export { default as ohnamiImg } from "./assets/ohnami.jpeg";
 export { default as pokyumImg } from "./assets/pokyum.jpeg";
 export { default as thunderImg } from "./assets/thunder.webp";
 export { default as hwasanImg } from "./assets/hwasan.jpeg";
+export { default as googleIcon } from "./assets/google-icon.png";
+export { default as kakaoIcon } from "./assets/kakao-icon.png";
+export { default as naverIcon } from "./assets/naver-icon.png";

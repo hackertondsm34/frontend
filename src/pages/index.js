@@ -207,7 +207,7 @@ const _Container = styled.div`
     }
     &:nth-child(2) {
       position: absolute;
-      top: 300px;
+      top: 40%;
       left: 100px;
       color: ${({ theme }) => theme.color.white};
       font: 600 32px "Inter";
