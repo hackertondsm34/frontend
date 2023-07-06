@@ -37,7 +37,17 @@ export const Layout = ({ children }) => {
               </svg>
               이전으로
             </div>
-            <div onClick={() => router.push(`/question/${id}`)}>
+            <div
+              onClick={() =>
+                router.push({
+                  pathname: "/question",
+                  query: {
+                    idx: 1,
+                    id,
+                  },
+                })
+              }
+            >
               퀴즈풀기
               <svg
                 width="22"
