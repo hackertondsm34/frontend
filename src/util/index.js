@@ -30,28 +30,29 @@ export const question = {
   earthquake: [
     {
       quiz_id: "tasdf",
-      content: "ㅅㄷㄴㅅ",
+      content:
+        "ㅅㄷㄴdsadsdsasdaskdsadnsajkdnsakjdnsajknsdakjndnjksandkjsandjkasndsakjndasjkdnasjkdnasjkdndkjsanjkdasndjknasdnasjkdnasjkdnsadnksadasdㅅ",
       image_url: "ㅁㄴㅇㄹ",
       type: "OX",
       correct_rate: 20.34,
     },
     {
       quiz_id: "tasdf",
-      content: "ㅅㄷㄴㅅ",
+      content: "ㅅㄷㄴdasdsadasdㅅ",
       image_url: "ㅁㄴㅇㄹ",
       type: "ANSWER",
       correct_rate: 20.34,
     },
     {
       quiz_id: "tasdf",
-      content: "ㅅㄷㄴㅅ",
+      content: "ㅅㄷadsadsadsadasdㄴㅅ",
       image_url: "ㅁㄴㅇㄹ",
       type: "OX",
       correct_rate: 20.34,
     },
     {
       quiz_id: "tasdf",
-      content: "ㅅㄷㄴㅅ",
+      content: "sdsadasdasdadasㅅㄷㄴㅅ",
       image_url: "ㅁㄴㅇㄹ",
       type: "OX",
       correct_rate: 20.34,
