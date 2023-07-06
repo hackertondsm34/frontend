@@ -190,10 +190,11 @@ const _Title = styled.div`
   > div {
     display: flex;
     gap: 10px;
-    align-items: flex-end;
+    align-items: center;
     color: ${({ theme }) => theme.color.black};
     font: 600 24px "Inter";
-
+    overflow-x: hidden;
+    white-space: pre-wrap;
     > span {
       font: 400 16px "Inter";
       color: ${({ theme }) => theme.color.gray6};
