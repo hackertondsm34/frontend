@@ -1,8 +1,8 @@
 // axios instance 를 생성해주었습니다.
 import axios from "axios";
 import cookie from "js-cookie";
-const request = axios.create({
-  baseURL: "http://3.36.186.20:3000",
+export const request = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
 });
 const accessToken = cookie.get("accessToken");
 if (accessToken !== undefined) {
@@ -27,4 +27,3 @@ request.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-export default request;
