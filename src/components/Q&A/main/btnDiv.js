@@ -1,22 +1,21 @@
 import { styled } from "styled-components";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import { useContextAction, useContextValue } from "@/hooks/provider";
 
 export default function BtnDiv() {
   const [areaOption, setAreaOption] = useState(false);
-  const [optionText, setOptionText] = useState("");
+  const {optionText} = useContextValue();
+  const dispatch = useContextAction();
+//   const [optionText, setOptionText] = useState("");
   const router = useRouter();
   const onAreaOption = () => {
     setAreaOption((pre) => !pre);
   };
-  const onOptionText = (e) => {
-    setOptionText(e);
+  const onOptionText = (e) => { 
+   dispatch({type:"OPTIONTEXT",text:e})
     setAreaOption(false);
   };
-  function filtering(e) {
-    const a = writing.filter((word) => word.cartegory === e);
-    return a;
-  }
     return (
     <BtnContainer>
       <AreaSelect>
@@ -101,6 +100,7 @@ const WritingBtn = styled.div`
   font-family: Inter;
   font-style: normal;
   font-weight: 600;
+  cursor: pointer;
 `;
 
 const Title = styled.div`

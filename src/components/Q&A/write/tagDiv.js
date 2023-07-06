@@ -1,7 +1,7 @@
 import { styled } from "styled-components";
 import { useState } from "react";
 
-export default function TagDiv() {
+export default function TagDiv({category, ChangeState}) {
   const tagItem = [
     "화산폭발",
     "침수",
@@ -36,7 +36,9 @@ export default function TagDiv() {
     <div
       key={i}
       onClick={() => {
-        setTag(tag.map((arr, index) => i === index));
+        setTag((prev)=>prev.map((arr, index) => i === index));
+        ChangeState('category',list);
+       
       }}
     >
       {tag[i] ? <ClickTag>{list}</ClickTag> : <Tag>{list}</Tag>}
@@ -79,10 +81,14 @@ const Tag = styled.div`
   font-weight: 700;
   box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.15);
   cursor: pointer;
-  :hover {
+  &:hover {
     background-color: ${({ theme }) => theme.color.primary};
+    color: #fff;
+
+    transition: all ease 0.4s;
   }
 `;
 const ClickTag = styled(Tag)`
   background-color: ${({ theme }) => theme.color.primary};
+  color: #fff;
 `;

@@ -1,8 +1,16 @@
 import { styled } from "styled-components";
+import { useRouter } from "next/router";
 export default function WritingBtn() {
+  const router = useRouter();
   return (
     <BtnDiv>
-      <Button>작성 완료</Button>
+      <Button
+        onClick={() => {
+          router.push("/Q&A/main");
+        }}
+      >
+        작성 완료
+      </Button>
     </BtnDiv>
   );
 }
@@ -11,11 +19,12 @@ const BtnDiv = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
+  cursor: pointer;
 `;
 const Button = styled.button`
   width: 275px;
-  height: 51px;
-  margin-top: 35px;
+  height: 56px;
+  margin-top: 25px;
   background-color: ${({ theme }) => theme.color.primary};
   border: 0;
   border-radius: 5px;

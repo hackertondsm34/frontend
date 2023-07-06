@@ -1,10 +1,18 @@
+import { useState } from "react";
 import { styled } from "styled-components";
-export default function ContentDiv() {
+
+export default function ContentDiv({content,ChangeState}) {
+//   const [content, setContent] = useState("");
   return (
     <ContentBox>
       <h1>내용</h1>
-      <InputDiv placeholder="내용을 입력해주세요"></InputDiv>
-      <p>0 / 255</p>
+      <InputDiv
+        placeholder="내용을 입력해주세요"
+        onChange={(e) => {
+          ChangeState('content',e.target.value);
+        }}
+      ></InputDiv>
+      <p>{content.length} / 255</p>
     </ContentBox>
   );
 }
