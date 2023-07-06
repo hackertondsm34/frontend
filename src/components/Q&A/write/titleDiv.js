@@ -1,9 +1,15 @@
 import { styled } from "styled-components";
-export default function TitleDiv() {
+import { useState } from "react";
+export default function TitleDiv({title, ChangeState}) {
   return (
     <TitleBox>
       <h1>제목</h1>
-      <InputDiv placeholder="제목을 입력해주세요"></InputDiv>
+      <InputDiv
+        placeholder="제목을 입력해주세요"
+        onChange={(e) => {
+          ChangeState("title", e.target.value);
+        }}
+      ></InputDiv>
     </TitleBox>
   );
 }

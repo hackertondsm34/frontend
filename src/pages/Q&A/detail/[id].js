@@ -1,8 +1,26 @@
 import { styled } from "styled-components";
 import { useState } from "react";
+import axios from "axios";
+import { request } from "@/apis";
+import { useRouter } from "next/router";
 
 export default function Detail() {
   const [commend, setCommend] = useState("");
+  const id = useRouter().query.id;
+  const send = async () => {
+    await request({
+      method: "POST",
+      url: "/questions/answer",
+      data: {
+        answer: commend,
+      },
+      params: {
+        id,
+      },
+    }).then((res) => {
+      setCommend("");
+    });
+  };
   return (
     <Page>
       <Header></Header>
@@ -15,7 +33,7 @@ export default function Detail() {
           </TextBox>
           <ContentDiv>
             <p>
-              제가 요즘 참 바빠요. 근데 3학년 2반 김모군이 눈에 자꾸 띄어없애고
+              제가 요즘 참 바0빠요. 근데 3학년 2반 김모군이 눈에 자꾸 띄어없애고
               싶습니다. 꿀팁부탁드려요. 집이 참 가고 싶네요. 내가 왜 여기서
               디자인이나 하고 있는지 의문이 들지만 까라면 까야겠죠. 노력은
               해보려구요. 디자인을 하나씩 추가하면서 뭘 어떻게 더 해야되는지
@@ -34,7 +52,13 @@ export default function Detail() {
           ></textarea>
           <p>{commend.length} / 255</p>
           <div>
-            <button>답변 등록</button>
+            <button
+              onClick={() => {
+                send();
+              }}
+            >
+              답변 등록
+            </button>
           </div>
         </CommendWriteBox>
         <CommendContainer>
