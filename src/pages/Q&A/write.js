@@ -5,7 +5,7 @@ import ContentDiv from "@/components/Q&A/write/contentDiv";
 import { styled } from "styled-components";
 import { useState } from "react";
 import { useRouter } from "next/router";
-
+import { request } from "@/apis";
 export default function Write() {
   const [state, setState] = useState({ title: "", category: "", content: "" });
   const ChangeState = (name, value) => {
@@ -22,12 +22,11 @@ export default function Write() {
         type: state.category,
       },
     }).then((res) => {
-      router.push("/Q&A/main");
+      router.push("/Q&A");
     });
   };
   return (
     <Page>
-      <Header />
       <MainDiv>
         <TextBox />
         <TagDiv category={state.category} ChangeState={ChangeState} />
@@ -47,11 +46,6 @@ export default function Write() {
     </Page>
   );
 }
-const Header = styled.div`
-  width: 100%;
-  height: 7%;
-  background-color: ${({ theme }) => theme.color.primary};
-`;
 const Page = styled.div`
   width: 100vw;
   height: 100vh;
@@ -61,7 +55,7 @@ const MainDiv = styled.div`
   width: 974px;
   height: 93%;
   margin: 0 auto;
-  margin-top: 0;
+  margin-top: 80px;
 `;
 
 const BtnDiv = styled.div`

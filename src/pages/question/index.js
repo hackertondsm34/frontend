@@ -1,21 +1,53 @@
-import { keyframes, styled } from "styled-components";
-import { useState, useEffect } from "react";
+import { keyframes, styled, useTheme } from "styled-components";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
-import { question, arr } from "@/util";
+import { arr } from "@/util";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { request } from "@/apis";
+import { Spinner } from "@/components/spinner";
+import { useContextAction, useContextValue } from "@/hooks/provider";
 export default function Question() {
   const router = useRouter();
   const { idx, id } = router.query;
+  const dispatch = useContextAction();
   const [result, setResult] = useState({ answer: "", bool: false });
   const [state, setState] = useState(false);
+  const theme = useTheme();
+  const { data, status } = useQuery(["question", idx, id], async () => {
+    const res = await request(`/quiz/${id}`);
+    return res;
+  });
+  const mutate = useMutation(async ({ quiz_id, answer }) => {
+    const data = await request({
+      method: "patch",
+      url: `/quiz/check/${quiz_id}`,
+      data: {
+        answer,
+      },
+    });
+    return data;
+  });
+  if (status === "success" && data.questions.length === 0) {
+    router.back();
+    window.alert("문제가 없습니다.");
+  }
   useEffect(() => {
     const interval = setTimeout(() => {
-      setResult({ answer: "", bool: true });
+      if (data.questions.length !== 0) {
+        router.push({
+          pathname: "/question",
+          query: {
+            idx: parseInt(idx) + 1,
+            id,
+          },
+        });
+      }
     }, 10000);
     return () => clearTimeout(interval);
-  }, []);
+  }, [data, status]);
   useEffect(() => {
     const interval = setTimeout(() => {
-      if (state) {
+      if (mutate.data) {
         router.push({
           pathname: "/question",
           query: {
@@ -27,75 +59,123 @@ export default function Question() {
     }, 3000);
     return () => clearTimeout(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [state]);
+  }, [mutate.data]);
   useEffect(() => {
     if (result.bool) {
-      setState(true);
+      dispatch({
+        type: "TOAST",
+        toast: {
+          comment: "정답이 입력되었습니다.",
+          toastState: true,
+          color: theme.color.primary,
+        },
+      });
+      mutate.mutate({
+        quiz_id: data.questions[idx - 1].quiz_id,
+        answer: result.answer,
+      });
     }
   }, [result.bool]);
+  const display = useMemo(
+    () => (status === "success" ? "block" : "none"),
+    [status]
+  );
+  const width = useMemo(() => idx * 200, [idx]);
   return (
     <>
-      <_Layout>
-        <div>
-          <div>
-            <_Stick>
-              <_Bar width={1000 / 6 - idx} />
-              <_Bell>
-                {Array(5)
-                  .fill("")
-                  .map(() => (
+      {status === "loading" ? (
+        <>
+          <Spinner />
+        </>
+      ) : data.questions.length === 0 ? (
+        <></>
+      ) : (
+        <>
+          <_Layout>
+            <div>
+              <div>
+                <_Stick>
+                  <_Bar width={width} />
+                  <_Bell>
+                    {Array(5)
+                      .fill("")
+                      .map(() => (
+                        <>
+                          <div />
+                        </>
+                      ))}
+                  </_Bell>
+                </_Stick>
+                <_TimeOut display={display}>
+                  <div />
+                </_TimeOut>
+              </div>
+              <_Line />
+
+              <_Title>
+                <div>
+                  <div>{arr.find((e) => e.path === id).comment}</div>
+                  <span>정답률은 {data.questions.correct_rate}%입니다.</span>
+                </div>
+                <div>{data.questions[idx - 1].content}</div>
+              </_Title>
+              {data.questions[idx - 1].type === "OX" ? (
+                <_AnswerOX>
+                  {["O", "X"].map((e) => (
                     <>
-                      <div />
+                      <div
+                        onClick={() => {
+                          if (idx == 5) {
+                            router.push("/");
+                          } else {
+                            router.push({
+                              pathname: "/question",
+                              query: {
+                                idx: parseInt(idx) + 1,
+                                id,
+                              },
+                            });
+                          }
+                        }}
+                      >
+                        {e}
+                      </div>
                     </>
                   ))}
-              </_Bell>
-            </_Stick>
-            <_TimeOut>
-              <div />
-            </_TimeOut>
-          </div>
-          <_Line />
-          <_Title>
-            <div>
-              <div>{arr.find((e) => e.path === id).comment}</div>
-              <span>정답률은 {question[id][idx - 1].correct_rate}%입니다.</span>
-            </div>
-            <div>{question[id][idx - 1].content}</div>
-          </_Title>
-          {question[id][idx - 1].type === "OX" ? (
-            <_AnswerOX>
-              {["O", "X"].map((e) => (
-                <>
-                  <div
-                    onClick={() => {
-                      setResult({ answer: e, bool: true });
-                    }}
-                  >
-                    {e}
+                </_AnswerOX>
+              ) : (
+                <_AnswerInput>
+                  <div>
+                    <input placeholder="문제의 정답을 적으세요. 예:(지진..etc" />
+                    <div>제출</div>
                   </div>
-                </>
-              ))}
-            </_AnswerOX>
-          ) : (
-            <_AnswerInput>
-              <div>
-                <input placeholder="문제의 정답을 적으세요. 예:(지진..etc" />
-                <div>제출</div>
-              </div>
-            </_AnswerInput>
-          )}
-          <_NextBtn>
-            <div
-              onClick={() => {
-                setResult({ answer: "", bool: true });
-              }}
-            >
-              다음 문제
+                </_AnswerInput>
+              )}
+              <_NextBtn>
+                <div
+                  onClick={() => {
+                    if (idx == 5) {
+                      router.push("/");
+                    } else {
+                      router.push({
+                        pathname: "/question",
+                        query: {
+                          idx: parseInt(idx) + 1,
+                          id,
+                        },
+                      });
+                    }
+                  }}
+                >
+                  다음 문제
+                </div>
+              </_NextBtn>
             </div>
-          </_NextBtn>
-        </div>
-      </_Layout>
-      <_Modal></_Modal>
+          </_Layout>
+          {mutate.isLoading && <Spinner />}
+          {mutate.data && <_Modal></_Modal>}
+        </>
+      )}
     </>
   );
 }
@@ -119,6 +199,7 @@ const _AnswerOX = styled.div`
   align-items: center;
   gap: 150px;
   > div {
+    cursor: pointer;
     font: 700 128px "Inter";
     color: ${({ theme }) => theme.color.gray4};
     &:hover {
@@ -242,6 +323,7 @@ const _TimeOut = styled.div`
   background-color: ${({ theme }) => theme.color.gray2};
   border-radius: 10px;
   > div {
+    display: ${({ display }) => display};
     height: 100%;
     background-color: ${({ theme }) => theme.color.secondary};
     animation: ${Fill} 10s linear 0s alternate forwards;

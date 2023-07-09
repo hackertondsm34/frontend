@@ -12,6 +12,11 @@ const reducer = (state, action) => {
         ...state,
         optionText: action.text,
       };
+    case "TOAST":
+      return {
+        ...state,
+        toast: action.toast,
+      };
   }
 };
 const ValueContext = createContext();
@@ -20,6 +25,11 @@ export const ContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, {
     header: false,
     optionText: "전체",
+    toast: {
+      comment: "",
+      toastState: false,
+      color: "",
+    },
   });
   return (
     <>
