@@ -70,7 +70,7 @@ const _Header = styled.header`
   display: flex;
   justify-content: space-between;
   background-color: ${({ color }) => color};
-  backdrop-filter: blur(3px);
+  backdrop-filter: blur(1px);
   > div {
     &:first-child {
       height: 100%;

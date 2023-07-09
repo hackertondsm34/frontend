@@ -121,7 +121,7 @@ export default function Home() {
         </_Layout>
         <div>
           재난 관련 궁금사항이 있으신가요?
-          <Link href="/">Q&A 페이지로 이동</Link>
+          <Link href="/Q&A">Q&A 페이지로 이동</Link>
         </div>
         <_CardLayout>
           {arr.map((e) => (

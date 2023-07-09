@@ -3,13 +3,19 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useContextValue } from "@/hooks/provider";
 import { request } from "@/apis";
+import { useQuery } from "@tanstack/react-query";
 
 export default function TableDiv() {
   const router = useRouter();
-  const { optionText } = useContextValue();
-  const [info, setInfo] = useState({
-    postElementList: [],
+  const { data, loading, error } = useQuery(["list"], async () => {
+    const data = await request({
+      method: "get",
+      url: "/questions/",
+    });
+    return data;
   });
+  console.log(data);
+  const { optionText } = useContextValue();
   const [writing, setWriting] = useState([
     {
       title: "자주 머물수있게 해",
@@ -22,21 +28,12 @@ export default function TableDiv() {
       date: "2023-07-04",
     },
   ]);
-  useEffect(() => {
-    request({
-      method: "get",
-      url: "/questions/",
-    }).then((res) => {
-      console.log(res);
-      setInfo(res.data);
-    });
-  }, []);
   function filtering(e) {
-    const a = info.postElementList.filter((word) => word.cartegory === e);
+    const a = data.questions.filter((word) => word.cartegory === e);
     console.log(a);
     return a;
   }
-  const ContentDiv = () => {
+  const ContentDiv = ({ list, index }) => {
     return (
       <>
         <ContentBox
@@ -44,7 +41,7 @@ export default function TableDiv() {
             router.push(`/Q&A/detail/${index}`);
           }}
         >
-          <NumberText>{index + 1}</NumberText>
+          <NumberText>{index}</NumberText>
           <TitleText2>{list.title}</TitleText2>
           <CartegoryText2>{list.cartegory}</CartegoryText2>
           <DateText2>{list.date}</DateText2>
@@ -53,31 +50,56 @@ export default function TableDiv() {
     );
   };
   const writingList = () => {
-    return (
-      <>
-        {optionText === "전체"
-          ? info.postElementList.map((list, index) => (
+    if (loading) {
+      return <></>;
+    }
+    if (error) {
+      return <></>;
+    }
+    if (data) {
+      console.log(data);
+      return (
+        <>
+          {optionText === "전체" && data?.questions.length !== 0
+            ? data.questions.map((list, index) => (
+                <>
+                  <ContentDiv
+                    key={index}
+                    index={index + 1}
+                    list={list}
+                    onClick={() => {
+                      router.push(`/Q&A/detail/${index}`);
+                    }}
+                  ></ContentDiv>
+                </>
+              ))
+            : filtering(optionText).map((list, index) => (
+                <>
+                  <ContentBox>
+                    <NumberText>{index + 1}</NumberText>
+                    <TitleText2>{list.title}</TitleText2>
+                    <CartegoryText2>{list.cartegory}</CartegoryText2>
+                    <DateText2>{list.date}</DateText2>
+                  </ContentBox>
+                </>
+              ))}
+          {Array(9 - data.questions.length)
+            .fill("")
+            .map((list, index) => (
               <>
                 <ContentDiv
                   key={index}
+                  index={""}
                   onClick={() => {
                     router.push(`/Q&A/detail/${index}`);
                   }}
+                  list={{ title: "", cartegory: "", date: "" }}
                 ></ContentDiv>
               </>
-            ))
-          : filtering(optionText).map((list, index) => (
-              <>
-                <ContentBox>
-                  <NumberText>{index + 1}</NumberText>
-                  <TitleText2>{list.title}</TitleText2>
-                  <CartegoryText2>{list.cartegory}</CartegoryText2>
-                  <DateText2>{list.date}</DateText2>
-                </ContentBox>
-              </>
             ))}
-      </>
-    );
+        </>
+      );
+    }
   };
   return (
     <Container>
@@ -99,6 +121,7 @@ const Container = styled.div`
   width: 100%;
   height: 542px;
   margin-top: 80px;
+  margin-bottom: 100px;
   hr {
     width: 100%;
     height: 1px;

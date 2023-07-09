@@ -3,88 +3,85 @@ import { useState } from "react";
 import axios from "axios";
 import { request } from "@/apis";
 import { useRouter } from "next/router";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Detail() {
   const [commend, setCommend] = useState("");
   const id = useRouter().query.id;
-  const send = async () => {
-    await request({
-      method: "POST",
-      url: "/questions/answer",
-      data: {
-        answer: commend,
-      },
+  const send = async (id) => {
+    const data = await request({
+      method: "get",
+      url: "/questions",
       params: {
         id,
       },
-    }).then((res) => {
-      setCommend("");
     });
+    return data;
   };
+  const { data, status } = useQuery(["detail", id], send(id));
   return (
     <Page>
-      <Header></Header>
-      <MainDiv>
-        <ContentBox>
-          <TextBox>
-            <h1>김진건을 어떻게 없앨까요?&nbsp;&nbsp;&nbsp;</h1>
-            <div>화산폭발</div>
-            <p>2023-07-04</p>
-          </TextBox>
-          <ContentDiv>
-            <p>
-              제가 요즘 참 바0빠요. 근데 3학년 2반 김모군이 눈에 자꾸 띄어없애고
-              싶습니다. 꿀팁부탁드려요. 집이 참 가고 싶네요. 내가 왜 여기서
-              디자인이나 하고 있는지 의문이 들지만 까라면 까야겠죠. 노력은
-              해보려구요. 디자인을 하나씩 추가하면서 뭘 어떻게 더 해야되는지
-              모르겠어요. 우리팀에 디자이너가 있었으면 개꿀 빨았을텐데 참
-              아쉬워요.
-            </p>
-          </ContentDiv>
-        </ContentBox>
-        <CommendWriteBox>
-          <h1>2개의 답변이 있어요</h1>
-          <textarea
-            placeholder="답변을 입력해주세요"
-            onChange={(e) => {
-              setCommend(e.target.value);
-            }}
-          ></textarea>
-          <p>{commend.length} / 255</p>
-          <div>
-            <button
-              onClick={() => {
-                send();
-              }}
-            >
-              답변 등록
-            </button>
-          </div>
-        </CommendWriteBox>
-        <CommendContainer>
-          <CommendDiv>
-            <h1>
-              <nav>불타는 화산</nav>님의 답변
-            </h1>
-            <p>
-              화산에다가 밀어버리면 깔끔할 듯 싶네요! <br />
-              저도 그렇게 한번 해보려구요!
-            </p>
-            <h3>2023-07-04</h3>
-          </CommendDiv>
-          <CommendDiv>
-            <h1>
-              <nav>불타는 화산</nav>님의 답변
-            </h1>
-            <p>
-              화산에다가 밀어버리면 깔끔할 듯 싶네요! <br />
-              저도 그렇게 한번 해보려구요!
-            </p>
-            <h3>2023-07-04</h3>
-          </CommendDiv>
-        </CommendContainer>
-        <Footer></Footer>
-      </MainDiv>
+      {status === "loading" ? (
+        <></>
+      ) : (
+        <>
+          <Header></Header>
+          <MainDiv>
+            <ContentBox>
+              <TextBox>
+                <h1>{data.ttile}&nbsp;&nbsp;&nbsp;</h1>
+                <div>{data.type}</div>
+                <p>2023-07-06</p>
+              </TextBox>
+              <ContentDiv>
+                <p>{data.content}</p>
+              </ContentDiv>
+            </ContentBox>
+            <CommendWriteBox>
+              <h1>2개의 답변이 있어요</h1>
+              <textarea
+                placeholder="답변을 입력해주세요"
+                onChange={(e) => {
+                  setCommend(e.target.value);
+                }}
+              ></textarea>
+              <p>{commend.length} / 255</p>
+              <div>
+                <button
+                  onClick={() => {
+                    send();
+                  }}
+                >
+                  답변 등록
+                </button>
+              </div>
+            </CommendWriteBox>
+            <CommendContainer>
+              <CommendDiv>
+                <h1>
+                  <nav>불타는 화산</nav>님의 답변
+                </h1>
+                <p>
+                  화산에다가 밀어버리면 깔끔할 듯 싶네요! <br />
+                  저도 그렇게 한번 해보려구요!
+                </p>
+                <h3>2023-07-04</h3>
+              </CommendDiv>
+              <CommendDiv>
+                <h1>
+                  <nav>불타는 화산</nav>님의 답변
+                </h1>
+                <p>
+                  화산에다가 밀어버리면 깔끔할 듯 싶네요! <br />
+                  저도 그렇게 한번 해보려구요!
+                </p>
+                <h3>2023-07-04</h3>
+              </CommendDiv>
+            </CommendContainer>
+            <Footer></Footer>
+          </MainDiv>
+        </>
+      )}
     </Page>
   );
 }

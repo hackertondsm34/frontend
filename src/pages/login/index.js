@@ -1,7 +1,20 @@
 import { styled } from "styled-components";
 import Image from "next/image";
 import { naverIcon, kakaoIcon, googleIcon } from "../../../public";
+import { useRouter } from "next/router";
+import { useState, useEffect } from "react";
+import { Spinner } from "@/components/spinner";
 export default function Login() {
+  const router = useRouter();
+  const [state, setState] = useState(false);
+  useEffect(() => {
+    const interval = setTimeout(() => {
+      if (state) {
+        router.push("/");
+      }
+    }, 1000);
+    return () => clearTimeout(interval);
+  }, [state]);
   return (
     <>
       <_Card>
@@ -43,6 +56,9 @@ export default function Login() {
                     {...others}
                     key={comment}
                     href={`${process.env.NEXT_PUBLIC_API_URL}/auth/${path}`}
+                    onClick={() => {
+                      setState(true);
+                    }}
                   >
                     <div>
                       <Image src={src} alt={comment} />
@@ -55,6 +71,7 @@ export default function Login() {
           </div>
         </div>
       </_Card>
+      {state && <Spinner />}
     </>
   );
 }
